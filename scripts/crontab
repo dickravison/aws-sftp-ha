@@ -1,0 +1,5 @@
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
+#Run storage sync every minute
+* * * * * root /usr/local/bin/sync-storage.sh
+#Look for new users or for updates to user creds
+* * * * * root /usr/local/bin/create-users.sh

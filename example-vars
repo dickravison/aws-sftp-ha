@@ -1,0 +1,13 @@
+region              = "eu-west-1"
+HardDiskSize        = "small"
+Stage               = "beta"
+route53_zone_id     = "Z08807561PVKo"
+azs                 = 2
+sftp_security_group = ["192.168.0.1/32", "172.16.0.1/32"]
+asg_desired         = 1
+asg_min             = 1
+asg_max             = 2
+asg_instance_type   = "t2.micro"
+project_name        = "sftp-dvsn"
+creator             = "Rick Davison"
+hostname            = "sftp.dvsn.io"
