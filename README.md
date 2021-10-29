@@ -45,7 +45,7 @@ which with 3 AZ's would then give you 251 available IPs in each public subnet, a
 
 DNS records pointing to the NLB will be created using an existing zone which is passed in as a var. The hostname var should be set to the same domain name as the zone. The zone was originally created within this but it would create duplicated zones when multiple environments were deployed.
 
-User management is handed by DynamoDB. A script is ran every minute to ensure users any new users are added quickly, and if there is a change to the users keyfile or password, this is then replicated too. A user will need to be added as a new item in the DynamoDB table and an example is below for a user with both a password and keyfile, only the UserName is a required field.
+User management is handled by DynamoDB. A script is ran every minute to ensure any new users are added and update existing users passwords and/or keyfiles too. A user will need to be added as a new item in the DynamoDB table and an example is below for a user with both a password and keyfile. A user can have a password, a keyfile or both. The UserName attribute is the only required field.
 
 | UserName   | Password           | Keyfile                                                            |
 |------------|--------------------|--------------------------------------------------------------------|
