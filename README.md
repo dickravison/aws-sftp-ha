@@ -1,10 +1,9 @@
 # HA SFTP in AWS
-
-This will create an EC2 ASG behind a NLB and syncs uploads from a users upload directory into S3. This will allow users to auth with both SSH keys and passwords. You can only access the backend EC2 instances using SSM, there is no direct SSH access other than SFTP.
+This will create an EC2 ASG behind an NLB and syncs uploads from each of the SFTP user's upload directory into S3. This will allow users to auth with both SSH keys and passwords. You can only access the backend EC2 instances using SSM, there is no direct SSH access other than SFTP.
 
 DDoS protection is provided automatically by AWS Shield Standard as this is applied to NLBs.
 
-The CIDR range for the VPC is decided by what 'stage' is defined in the Stage variable. A local mapping in the vpc.tf file is then used to determine what CIDR range is used in the VPC and then the corresponding public and private subnets.
+The CIDR range for the VPC is decided by what 'stage' is defined in the Stage variable. A local mapping in the `vpc.tf` file is then used to determine what CIDR range is used in the VPC and then the corresponding public and private subnets.
 
 ```
   cidr_range = {
@@ -27,7 +26,7 @@ The CIDR range for the VPC is decided by what 'stage' is defined in the Stage va
   }
 ```
 
-These ranges aren't split in a way that I would recommend but for the purposes of this example, these will do. The allocation should be skewed more towards th private range as there should be minimal IP requirements for the public range but this would also be dependent on what other resources are deployed in the same environment. I'd probably look at changing these to a /20 for public and a /18 for private as a good starting point. The cidrsubnet function would need to be updated for the private subnets, an example would be to change the below for the 'latest' stage:
+These ranges aren't split in a way that I would recommend but for the purposes of this example, these will do. The allocation should be skewed more towards the private range as there should be minimal IP requirements for the public range but this would also be dependent on what other resources are deployed in the same environment. I'd probably look at changing these to a /20 for public and a /18 for private as a good starting point. The `cidrsubnet()` function would need to be updated for the private subnets, an example would be to change the below for the 'latest' stage:
 
 ```
 ...
@@ -42,13 +41,13 @@ resource "aws_subnet" "private" {
 }
 ```
 
-which with 3 AZ's would then give you 251 available IPs in each public subnet, and 4091 available IPs in each private subnet. 
+which with 3 AZ's would then give you 251 available IPs in each public subnet, and 4091 available IPs in each private subnet.
 
-DNS records pointing to the NLB will be created using an existing zone which is passed in as a var. The hostname var should be set to the same domain name as the zone. The zone was originally created within this but it would create duplicated zones when multiple environments were deployed. 
+DNS records pointing to the NLB will be created using an existing zone which is passed in as a var. The hostname var should be set to the same domain name as the zone. The zone was originally created within this but it would create duplicated zones when multiple environments were deployed.
 
-User management is handed by DynamoDB. A script is ran every minute to ensure users any new users are added quickly, and if there is a change to the users keyfile or password, this is then replicated too.
+User management is handed by DynamoDB. A script runs every minute to ensure users any new users are added quickly, and if there is a change to the user's keyfile or password, this is then replicated too.
 
-First the S3 backend needs to be configured. To do this I have the bucket, key and region configured in backend.conf.
+First, the S3 backend needs to be configured. To do this I have the bucket, key, and region configured in `backend.conf`.
 
 ```
 $ cat backend.conf
@@ -57,7 +56,7 @@ key    = "tf.state"
 region = "eu-west-1"
 ```
 
-and then specify this file when running terraform init.
+and then specify this file when running `terraform init`.
 
 ```
 terraform init --backend-config=backend.conf
@@ -105,7 +104,7 @@ $ terraform workspace list
 * test
 ```
 
-You can then specify the tfvars when running plan and apply while in each workspace and this will deploy separate environments within the same account using the same codebase.
+You can then specify the tfvars when running `terraform plan` and `terraform apply` while in each workspace and this will deploy separate environments within the same account using the same codebase.
 
 ```
 $ terraform workspace select beta
@@ -122,7 +121,7 @@ $ terraform apply -var-file=test.tfvars
 ...
 ```
 
-Once this has completed, the below commands shows the two NLBs created and both with tags showing the different environments they belong to.
+Once this has finished, the below commands show the two NLBs created and both with tags showing the different environments they belong to.
 
 ```
 $ aws elbv2 describe-load-balancers --query LoadBalancers[].DNSName
@@ -212,4 +211,4 @@ sftp>
 - Replace storage so that transfer is bidirectional, maybe EFS.
 - Create hosted zone through TF or dynamically look up the zone ID of a given hostname
 - Delete users that aren't present in DynamoDB.
-- Flesh the README out more..
+- Flesh the README out more
