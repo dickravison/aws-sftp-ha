@@ -23,7 +23,7 @@ The CIDR range for the VPC is decided by what 'stage' is defined in the Stage va
     latest = "10.1.16.0/20"
     test   = "10.2.16.0/20"
     beta   = "10.3.16.0/20"
-    prod   = "10.4.16.0/2"
+    prod   = "10.4.16.0/20"
   }
 ```
 
