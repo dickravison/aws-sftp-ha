@@ -1,6 +1,6 @@
 #Create A record pointing to NLB
 resource "aws_route53_record" "sftp" {
-  zone_id = "Z08807561PAS0OM2IGXVK"
+  zone_id = var.route53_zone_id
   name    = "${var.Stage}.${var.hostname}"
   type    = "A"
 
