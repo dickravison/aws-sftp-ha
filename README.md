@@ -27,7 +27,7 @@ The CIDR range for the VPC is decided by what 'stage' is defined in the Stage va
   }
 ```
 
-These ranges aren't split in a way that I would use normally but for the purposes of this example, these will do. The allocation should be skewed more towards private range as there should be minimal requirements for the public range but this would also be dependent on what else is deployed in the same environment. I'd probably look at changing these to a /20 for public and a /18 for private as a good starting point. The cidrsubnet function would need to be updated for the private range for this, an example would be to change the below for latest:
+These ranges aren't split in a way that I would recommend but for the purposes of this example, these will do. The allocation should be skewed more towards th private range as there should be minimal IP requirements for the public range but this would also be dependent on what other resources are deployed in the same environment. I'd probably look at changing these to a /20 for public and a /18 for private as a good starting point. The cidrsubnet function would need to be updated for the private subnets, an example would be to change the below for the 'latest' stage:
 
 ```
 ...
@@ -44,7 +44,7 @@ resource "aws_subnet" "private" {
 
 which with 3 AZ's would then give you 251 available IPs in each public subnet, and 4091 available IPs in each private subnet. 
 
-This will also create DNS records pointing to the NLB using an existing zone which is passed in as a var, the hostname var should be set to the same domain name as the zone. The zone was originally created within this but it would create duplicated zones when multiple environments were deployed.
+DNS records pointing to the NLB will be created using an existing zone which is passed in as a var. The hostname var should be set to the same domain name as the zone. The zone was originally created within this but it would create duplicated zones when multiple environments were deployed. 
 
 User management is handed by DynamoDB. A script is ran every minute to ensure users any new users are added quickly, and if there is a change to the users keyfile or password, this is then replicated too.
 
@@ -210,6 +210,6 @@ sftp>
 - Replace VPC and subnet creation so that it's dynamically created rather than static ranges
 - Replace resources with modules
 - Replace storage so that transfer is bidirectional, maybe EFS.
-- Create hosted zone through TF
+- Create hosted zone through TF or dynamically look up the zone ID of a given hostname
 - Delete users that aren't present in DynamoDB.
 - Flesh the README out more..
