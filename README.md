@@ -45,7 +45,11 @@ which with 3 AZ's would then give you 251 available IPs in each public subnet, a
 
 DNS records pointing to the NLB will be created using an existing zone which is passed in as a var. The hostname var should be set to the same domain name as the zone. The zone was originally created within this but it would create duplicated zones when multiple environments were deployed.
 
-User management is handed by DynamoDB. A script runs every minute to ensure users any new users are added quickly, and if there is a change to the user's keyfile or password, this is then replicated too.
+User management is handed by DynamoDB. A script is ran every minute to ensure users any new users are added quickly, and if there is a change to the users keyfile or password, this is then replicated too. A user will need to be added as a new item in the DynamoDB table and an example is below for a user with both a password and keyfile, only the UserName is a required field.
+
+| UserName   | Password           | Keyfile                                                            |
+|------------|--------------------|--------------------------------------------------------------------|
+| test-sftp1 | asfgafsgasfdgasfga | ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIdf2wyWxzYm+C++JP2B8gzE/1UrV2d |
 
 First, the S3 backend needs to be configured. To do this I have the bucket, key, and region configured in `backend.conf`.
 
