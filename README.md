@@ -27,6 +27,8 @@ The CIDR range for the VPC is decided by what 'stage' is defined in the Stage va
   }
 ```
 
+These ranges aren't split in a way that I would use normally but for the purposes of this example, these will do. The allocation should be skewed more towards private range as there should be minimal requirements for the public range but this would also be dependent on what else is deployed in the same environment. I'd probably look at changing these to a /20 for public and a /18 for private as a good starting point.
+
 This will also create DNS records pointing to the NLB using an existing zone which is passed in as a var, the hostname var should be set to the same domain name as the zone. The zone was originally created within this but it would create duplicated zones when multiple environments were deployed.
 
 User management is handed by DynamoDB. A script is ran every minute to ensure users any new users are added quickly, and if there is a change to the users keyfile or password, this is then replicated too.
