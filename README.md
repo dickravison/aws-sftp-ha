@@ -27,7 +27,22 @@ The CIDR range for the VPC is decided by what 'stage' is defined in the Stage va
   }
 ```
 
-These ranges aren't split in a way that I would use normally but for the purposes of this example, these will do. The allocation should be skewed more towards private range as there should be minimal requirements for the public range but this would also be dependent on what else is deployed in the same environment. I'd probably look at changing these to a /20 for public and a /18 for private as a good starting point.
+These ranges aren't split in a way that I would use normally but for the purposes of this example, these will do. The allocation should be skewed more towards private range as there should be minimal requirements for the public range but this would also be dependent on what else is deployed in the same environment. I'd probably look at changing these to a /20 for public and a /18 for private as a good starting point. The cidrsubnet function would need to be updated for the private range for this, an example would be to change the below for latest:
+
+```
+...
+private_range = {
+  latest = "10.1.64.0/18"
+...
+
+resource "aws_subnet" "private" {
+...
+  cidr_block        = cidrsubnet(lookup(local.private_range, var.Stage), 2, count.index)
+...
+}
+```
+
+which with 3 AZ's would then give you 251 available IPs in each public subnet, and 4091 available IPs in each private subnet. 
 
 This will also create DNS records pointing to the NLB using an existing zone which is passed in as a var, the hostname var should be set to the same domain name as the zone. The zone was originally created within this but it would create duplicated zones when multiple environments were deployed.
 
