@@ -53,7 +53,8 @@ variable "HardDiskSize" {
 }
 
 variable "sftp_security_group" {
-  type = list(string)
+  type        = list(string)
+  description = "List of IPs to allow access to SFTP ASG"
 }
 
 variable "asg_desired" {
