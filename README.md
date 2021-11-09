@@ -210,6 +210,7 @@ sftp>
 ```
 
 # Improvements
+- Use Route53 data source to check if route53 zone exists for hostname var and use this instead of the existing zone ID var, if it doesn't then create a route53 zone
 - Replace VPC and subnet creation so that it's dynamically created rather than static ranges
 - Replace resources with modules
 - Replace storage so that transfer is bidirectional, maybe EFS.
